@@ -1,7 +1,7 @@
 # Discord Basic Bot
 Created by: kilam2468 
 
-Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
+Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
 
 
 ## Roadmap
