@@ -23,10 +23,24 @@ async def on_ready():
 
 
 def play_next(ctx, source):
+    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
+    playlist.append("")
+    print("Playing next song")
+    print(playlist)
+    if playlist[0] == "":
+        playlist.pop()
+        pass
+    else:
+        if len(playlist) >= 1:
+            playlist.pop()
+            if voice.is_playing():
+                voice.stop()
+                play(ctx, playlist[0])
+
+
+async def queuecheck(ctx):
     if len(playlist) >= 1:
-        del playlist[0]
-        voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
-        voice.play(discord.FFmpegPCMAudio(source=source), after=lambda e: play_next(ctx, source))
+        await ctx.send("The queue is currently empty.")
 
 
 @client.command()
@@ -41,7 +55,9 @@ async def join(ctx):
 
 @client.command(name='play', help='Play a song', aliases=['plays', 'p'])
 async def play(ctx, url: str):
+    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     song_there = os.path.isfile("song.mp3")
+    voice.stop
     try:
         if song_there:
             os.remove("song.mp3")
@@ -57,7 +73,6 @@ async def play(ctx, url: str):
         print("Connected to \"" + connected.channel.name + "\""" voice channel")
     except discord.ClientException:
         pass
-    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     ydl_opts = {
         'format': 'bestaudio/best',
         "quiet": True,
@@ -82,10 +97,10 @@ async def play(ctx, url: str):
             if file.endswith(".mp3"):
                 os.rename(file, "song.mp3")
         await ctx.send("Playing: " + playlist[0])
-        playlist.pop(0)
+        # playlist.pop(0)
         voice.play(discord.FFmpegPCMAudio("song.mp3"), after=lambda e: play_next(ctx, playlist[0]))
         voice.pause()  # Pauses to sync audio, basically no more quick 2-3 seconds of audio
-        await asyncio.sleep(3)
+        await asyncio.sleep(1)
         voice.resume()
 
 
@@ -94,7 +109,8 @@ async def leave(ctx):
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     if voice.is_connected():
         await voice.disconnect()
-        playlist.clear()
+        voice.stop()
+        await asyncio.sleep(2)
         os.remove("song.mp3")  # Deletes the song.mp3 file
     else:
         await ctx.send("The bot is not connected to a voice channel.")
@@ -141,13 +157,16 @@ async def clear(ctx):
 @client.command()
 async def skip(ctx):
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
+    print(playlist)
     if voice.is_playing():
         voice.stop()
-        await play(ctx, playlist[0])
+        playlist.pop(0)
+        play_next(ctx, playlist[0])
     if not voice.is_playing():
+        voice.stop()
         await ctx.send("Currently no audio is playing.")
         await ctx.send("Attempting to skip song NOW...")
-        await ctx.invoke(Bot.get_command('play'), playlist[0])
+        await ctx.invoke(play_next(ctx, playlist[0]))
     else:
         await ctx.send("Currently no audio is playing.")
         await ctx.send("Attempting to skip song...")
