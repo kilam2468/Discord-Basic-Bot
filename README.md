@@ -17,7 +17,7 @@ Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
 - :heavy_check_mark: fix !join errors
 
 ## [TODO]
-- fix sync issues 
+- Fix sync issues 
 - Make playlist work
   - Fix Queue/and Skip Command
 - Add more commands?
