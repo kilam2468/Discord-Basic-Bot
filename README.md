@@ -21,5 +21,8 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
 - Make playlist work
   - Fix Queue/and Skip Command
 - Add more commands?
-
+  - Economy module
+    - create a database for the bot
+- 
+-Web Dashboard
 
