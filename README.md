@@ -16,13 +16,13 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
 - :heavy_check_mark: fix !leave command
 - :heavy_check_mark: fix !join errors
 - :heavy_check_mark: Fix Queue/and Skip Command
+- :heavy_check_mark: Economy module Framework
 
 ## [TODO]
 - Fix sync issues
 - Add more commands?
-  - Economy module
-    - create a database for the bot
-
+- create a database for the bot to store data such as balances
+  - as user types in chat money will be added to their balance
 
 
 - Web Dashboard
