@@ -15,11 +15,10 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
 - :heavy_check_mark: fix ensure voice
 - :heavy_check_mark: fix !leave command
 - :heavy_check_mark: fix !join errors
+- :heavy_check_mark: Fix Queue/and Skip Command
 
 ## [TODO]
-- Fix sync issues 
-- Make playlist work
-  - Fix Queue/and Skip Command
+- Fix sync issues
 - Add more commands?
   - Economy module
     - create a database for the bot

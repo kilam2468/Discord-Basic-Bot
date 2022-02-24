@@ -22,20 +22,22 @@ async def on_ready():
     print('------')
 
 
-def play_next(ctx, source):
+async def play_next(ctx, source):
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
-    playlist.append("")
-    print("Playing next song")
-    print(playlist)
-    if playlist[0] == "":
+    if playlist[0] is None:
         playlist.pop()
         pass
     else:
         if len(playlist) >= 1:
-            playlist.pop()
             if voice.is_playing():
                 voice.stop()
-                play(ctx, playlist[0])
+                await play(ctx, playlist[0])
+                print("Playing next song")
+                print(playlist[0])
+            else:
+                await play(ctx, playlist[0])
+                print("Playing next song")
+                print(playlist[0])
 
 
 async def queuecheck(ctx):
@@ -77,31 +79,34 @@ async def play(ctx, url: str):
         'format': 'bestaudio/best',
         "quiet": True,
         "outtmpl": "%(extractor)s-%(id)s-%(title)s.%(ext)s",
-        "restrictfilenames": True,
+        "restrict-filenames": True,
         "nocheckcertificate": True,
-        "ignoreerrors": False,
-        "no_warnings": True,
-        "default_search": "auto",
-        "source_address": "0.0.0.0",
+        "ignore-errors": False,
+        "default-search": "auto",
+        "source-address": "0.0.0.0",
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
             'preferredquality': '192',
         }],
     }
+    try:
+        playlist.pop()
+    except IndexError:
+        pass
     playlist.append(url)
     for i in playlist:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download(playlist)
+            ydl.download(playlist[0])
         for file in os.listdir("./"):
             if file.endswith(".mp3"):
                 os.rename(file, "song.mp3")
         await ctx.send("Playing: " + playlist[0])
-        # playlist.pop(0)
         voice.play(discord.FFmpegPCMAudio("song.mp3"), after=lambda e: play_next(ctx, playlist[0]))
         voice.pause()  # Pauses to sync audio, basically no more quick 2-3 seconds of audio
         await asyncio.sleep(1)
         voice.resume()
+        playlist.pop(0)
 
 
 @client.command()
@@ -157,16 +162,17 @@ async def clear(ctx):
 @client.command()
 async def skip(ctx):
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
-    print(playlist)
+    print(playlist[0])
     if voice.is_playing():
         voice.stop()
-        playlist.pop(0)
-        play_next(ctx, playlist[0])
+        await play_next(ctx, playlist[0])
     if not voice.is_playing():
         voice.stop()
         await ctx.send("Currently no audio is playing.")
         await ctx.send("Attempting to skip song NOW...")
-        await ctx.invoke(play_next(ctx, playlist[0]))
+        await play_next(ctx, playlist[0])
+        #playlist.pop(0)
+
     else:
         await ctx.send("Currently no audio is playing.")
         await ctx.send("Attempting to skip song...")
