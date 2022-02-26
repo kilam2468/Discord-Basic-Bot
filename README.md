@@ -18,11 +18,18 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
 - :heavy_check_mark: Fix Queue/and Skip Command
 - :heavy_check_mark: Economy module Framework
 
+- :heavy_check_mark: create a database Economy Module
+  - Connect Work, Crime, and Balance commands to database
+  - Start crime prompts
+  - Assign Balances with User ID
+
 ## [TODO]
 - Fix sync issues
 - Add more commands?
-- create a database for the bot to store data such as balances
-  - as user types in chat money will be added to their balance
+- Create more Crime Prompts
+- Create Work Prompts
+- Create Slut Prompts
+- as user types in chat money will be added to their balance
 
 
 - Web Dashboard
