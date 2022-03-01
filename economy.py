@@ -16,12 +16,13 @@ import datetime
 
 bot = commands.Bot(command_prefix='!', description='Economy Bot')
 
+slashcom = discord.slash_command()
 cluster = MongoClient(
     config.database)
 db = cluster["DiscordEconomy"]
 
 econposts = db.economy  # collection for Updating Economy Posts
-crimeprompt = db.crimeprompts   # collection for Crime Prompts#
+crimeprompt = db.crimeprompts  # collection for Crime Prompts#
 
 
 @bot.event
@@ -29,7 +30,7 @@ async def on_ready():  # When the bot is ready will post these things
     print('Logged in as')
     print(bot.user.name)
     # print(client.user.id)
-    print('Voice Online')
+    print('Economy Online')
     print('------')
 
 
@@ -94,10 +95,10 @@ class Economy(commands.Cog):
         help="Use this command to earn money illegally"
     )
     async def _crime(self, ctx):
-        money = random.randint(20, 50) # Generate a random amount of money
-        promptnum = random.randint(1, 3) # Generate a random number for the prompt id
-        findprompt = crimeprompt.find_one({"_id": str(promptnum)}) # Find the prompt
-        await ctx.send(str(findprompt["Prompt"]) + "{}".format(money)) # Send the prompt and the amount of money
+        money = random.randint(20, 50)  # Generate a random amount of money
+        promptnum = random.randint(1, 3)  # Generate a random number for the prompt id
+        findprompt = crimeprompt.find_one({"_id": str(promptnum)})  # Find the prompt
+        await ctx.send(str(findprompt["Prompt"]) + "{}".format(money))  # Send the prompt and the amount of money
         try:  # If the user has never had an entry in the database
             balance = {"_id": str(ctx.message.author.id),
                        "Name": str(ctx.message.author.name),
@@ -115,6 +116,12 @@ class Economy(commands.Cog):
             econposts.update_one(filter, {"$set": {"UpdatedDate": datetime.datetime.utcnow()}})
             NewSearchofID = econposts.find_one({"_id": str(ctx.message.author.id)})
             await ctx.send("You now have $" + str(NewSearchofID["Balance"]))
+
+
+@bot.slash_command(guild_ids=[917236140422070283], name="ping", description="Get bot ping")
+async def ping(ctx):
+    await ctx.send(f'Pong! {round(bot.latency * 1000)}ms')
+    print("Ping Command Was Run")
 
 
 bot.add_cog(Economy(bot))
