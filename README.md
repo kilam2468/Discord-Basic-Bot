@@ -22,6 +22,8 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
   - Connect Work, Crime, and Balance commands to database
   - Start crime prompts
   - Assign Balances with User ID
+- :heavy_check_mark: Started DND Module
+  - Created !roll Command  
 
 ## [TODO]
 - Fix sync issues
@@ -32,5 +34,6 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
 - as user types in chat money will be added to their balance
 
 
+- Possibly make a DND Module?
 - Web Dashboard
 
