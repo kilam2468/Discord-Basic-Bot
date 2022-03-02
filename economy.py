@@ -96,7 +96,7 @@ class Economy(commands.Cog):
     )
     async def _crime(self, ctx):
         money = random.randint(20, 50)  # Generate a random amount of money
-        promptnum = random.randint(1, 3)  # Generate a random number for the prompt id
+        promptnum = random.randint(1, 4)  # Generate a random number for the prompt id
         findprompt = crimeprompt.find_one({"_id": str(promptnum)})  # Find the prompt
         await ctx.send(str(findprompt["Prompt"]) + "{}".format(money))  # Send the prompt and the amount of money
         try:  # If the user has never had an entry in the database
