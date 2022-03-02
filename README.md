@@ -23,7 +23,11 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
   - Start crime prompts
   - Assign Balances with User ID
 - :heavy_check_mark: Started DND Module
-  - Created !roll Command  
+  - Created !roll Command 
+- :heavy_check_mark: Created !create Command for dnd characters
+- :heavy_check_mark: Created !list Command for dnd characters
+- :heavy_check_mark: Created !delete command for dnd characters
+- 
 
 ## [TODO]
 - Fix sync issues

@@ -23,6 +23,7 @@ db = cluster["DiscordEconomy"]
 
 econposts = db.economy  # collection for Updating Economy Posts
 crimeprompt = db.crimeprompts  # collection for Crime Prompts#
+workprompt = db.workprompts  # collection for Work Prompts
 
 
 @bot.event
@@ -53,7 +54,9 @@ class Economy(commands.Cog):
     )
     async def _work(self, ctx):
         money = random.randint(1, 10)  # Randomly generate an amount of money
-        await ctx.send("You worked and earned $" + "{}".format(money))
+        promptnum = random.randint(1, 2)  # Generate a random number for the prompt id
+        findprompt = workprompt.find_one({"_id": str(promptnum)})
+        await ctx.send(str(findprompt["Prompt"]) + "{}".format(money))
         try:  # If the user has never had an entry in the database
             balance = {"_id": str(ctx.message.author.id),
                        "Name": str(ctx.message.author.name),
