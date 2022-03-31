@@ -13,8 +13,10 @@ import pymongo
 from pymongo import MongoClient
 import config
 import datetime
+intents = discord.Intents.all()
+intents.members = True
 
-client = commands.Bot(command_prefix='!')
+client = commands.Bot(command_prefix='!', intents=intents)
 dice_list = ["D4", "D6", "D8", "D10", "D12", "D20", "D100"]
 # --------------------------
 cluster = MongoClient(
@@ -122,7 +124,7 @@ class Dnd(commands.Cog):
                 await ctx.send("Character #" + str(x['CharacterNum']))
                 await ctx.send("Character Name: " + x['CharacterName'])
                 await ctx.send("Character Class: " + x['CharacterClass'])
-                await ctx.send("Created at: " + str(x['CreatedDate'])[0:15])
+                await ctx.send("Created at: " + str(x['CreatedDate'])[0:10])
                 await ctx.send("---------------------------------")
 
 

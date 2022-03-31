@@ -2,15 +2,20 @@ import discord
 import os
 from discord.ext import commands
 import config
+import logging
+intents = discord.Intents.all()
+intents.members = True
 
-client = commands.Bot(command_prefix='!')
+
+client = commands.Bot(command_prefix='!', intents=intents)
+logging.basicConfig(level=logging.INFO)
 
 
 @client.event
 async def on_ready():
     print('Logged in as')
     print(client.user.name)
-    #print(client.user.id)
+    # print(client.user.id)
     print('Commands Online')
     print('------')
 
@@ -58,7 +63,8 @@ async def ping(ctx):
     await ctx.send(f'Pong! {round(client.latency * 1000)}ms')
     print("Ping Command Was Run")
 
-@client.command()
+
+@client.command(name='purge', help='purges chat', aliases=['Purge'])
 async def purge(ctx, arg: int):
     await ctx.channel.purge(limit=arg)
     print("Purge Command Was Run")

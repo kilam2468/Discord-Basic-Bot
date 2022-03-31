@@ -3,12 +3,16 @@ import yt_dlp
 import os
 import asyncio
 import config
+import logging
 
 from discord import ClientException
 from discord.ext import commands
 from discord.ext.commands import bot, Bot
+intents = discord.Intents.all()
+intents.members = True
 
-client = commands.Bot(command_prefix='!')
+client = commands.Bot(command_prefix='!', intents=intents)
+logging.basicConfig(level=logging.INFO)
 
 playlist = []
 

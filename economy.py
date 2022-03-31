@@ -1,3 +1,7 @@
+import asyncio
+
+import discord
+import os
 import discord
 import os
 from discord.ext import commands
@@ -11,12 +15,17 @@ import pymongo
 from pymongo import MongoClient
 import config
 import datetime
+import logging
+
+intents = discord.Intents.all()
+intents.members = True
 
 # -----------------------------------------------------------------------------------------------------------------------
 
-bot = commands.Bot(command_prefix='!', description='Economy Bot')
+bot = commands.Bot(command_prefix='!', description='Economy Bot', intents=intents)
+logging.basicConfig(level=logging.INFO)
 
-slashcom = discord.slash_command()
+# slashcom = discord.slash_command()
 cluster = MongoClient(
     config.database)
 db = cluster["DiscordEconomy"]
@@ -50,7 +59,6 @@ class Economy(commands.Cog):
         aliases=["Work"],
         brief="Work and Gain Money",
         help="Use this command to earn money legally",
-
     )
     async def _work(self, ctx):
         money = random.randint(1, 10)  # Randomly generate an amount of money
@@ -121,11 +129,11 @@ class Economy(commands.Cog):
             await ctx.send("You now have $" + str(NewSearchofID["Balance"]))
 
 
-@bot.slash_command(guild_ids=[917236140422070283], name="ping", description="Get bot ping")
-async def ping(ctx):
-    await ctx.send(f'Pong! {round(bot.latency * 1000)}ms')
-    print("Ping Command Was Run")
+# @bot.slash_command(guild_ids=[917236140422070283], name="ping", description="Get bot ping")
+# async def ping(ctx):
+# await ctx.send(f'Pong! {round(bot.latency * 1000)}ms')
+# print("Ping Command Was Run")
 
 
-bot.add_cog(Economy(bot))
+asyncio.run (bot.add_cog(Economy(bot)))
 bot.run(config.token)
