@@ -27,7 +27,7 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
 - :heavy_check_mark: Created !create Command for dnd characters
 - :heavy_check_mark: Created !list Command for dnd characters
 - :heavy_check_mark: Created !delete command for dnd characters
-- 
+- :heavy_check_mark: Created Basic Web Dashboard
 
 ## [TODO]
 - Fix sync issues
@@ -39,5 +39,6 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
 
 
 - Possibly make a DND Module?
-- Web Dashboard
+- Advanced Web Dashboard
+  - something like https://github.com/DrCoderEthan/Flask-Discord-Bot-Dashboard
 
