@@ -91,6 +91,7 @@ async def profile(ctx):
                 print(url)
                 print(r.status_code)
                 print("PROBLEM")
+                await ctx.send("There was a problem with your request. Please recheck and try again.")
                 return None
 
         elif pressed == 'Fortnite':

@@ -37,6 +37,13 @@ workprompt = db.workprompts  # collection for Work Prompts
 slutprompt = db.slutprompts  # collection for Slut Prompts
 slutfail = db.slutfail  # collection for Slut Failures
 
+crimemax = crimeprompt.count_documents({})
+crimemaxfail = crimefail.count_documents({})
+workmax = workprompt.count_documents({})
+slutmax = slutprompt.count_documents({})
+slutmaxfail = slutfail.count_documents({})
+# ------------------------------------
+
 
 @bot.event
 async def on_ready():  # When the bot is ready will post these things
@@ -79,7 +86,7 @@ class Economy(commands.Cog):
     @commands.cooldown(1, 300, commands.BucketType.user)
     async def _work(self, ctx):
         money = random.randint(1, 10)  # Randomly generate an amount of money
-        promptnum = random.randint(1, 2)  # Generate a random number for the prompt id
+        promptnum = random.randint(1, workmax)  # Generate a random number for the prompt id
         findprompt = workprompt.find_one({"_id": str(promptnum)})
         await ctx.send(str(findprompt["Prompt"]) + "{}".format(money))
         try:  # If the user has never had an entry in the database
@@ -136,7 +143,7 @@ class Economy(commands.Cog):
                 econposts.insert_one(balance)
                 await ctx.send("Your Balance is now $" + str(balance["Balance"]))
             except:  # If the user has an entry in the database
-                failnum = random.randint(1, 3)  # Generate a random number for the fail prompt id
+                failnum = random.randint(1, crimemaxfail)  # Generate a random number for the fail prompt id
                 findprompt = crimefail.find_one({"_id": str(failnum)})
                 searchbyId = econposts.find_one({"_id": str(ctx.message.author.id)})
                 idBalance = searchbyId["Balance"]
@@ -148,7 +155,7 @@ class Economy(commands.Cog):
             await ctx.send(str(findprompt["Prompt"]) + "{}".format(money))  # Send the user the amount of money lost
             await ctx.send("You now have $" + str(NewSearchofID["Balance"]))  # Send the user their new balance
         else:  # If the user is not caught
-            promptnum = random.randint(1, 4)  # Generate a random number for the prompt id
+            promptnum = random.randint(1, crimemax)  # Generate a random number for the prompt id
             findprompt = crimeprompt.find_one({"_id": str(promptnum)})  # Find the prompt
             await ctx.send(str(findprompt["Prompt"]) + "{}".format(money))  # Send the prompt and the amount of money
             try:  # If the user has never had an entry in the database
@@ -189,7 +196,7 @@ class Economy(commands.Cog):
                 econposts.insert_one(balance)
                 await ctx.send("Your Balance is now $" + str(balance["Balance"]))
             except:  # If the user has an entry in the database
-                failnum = random.randint(1, 4)  # Generate a random number for the fail prompt id
+                failnum = random.randint(1, slutfail)  # Generate a random number for the fail prompt id
                 findprompt = slutfail.find_one({"_id": str(failnum)})
                 searchbyId = econposts.find_one({"_id": str(ctx.message.author.id)})
                 idBalance = searchbyId["Balance"]
@@ -201,7 +208,7 @@ class Economy(commands.Cog):
             await ctx.send(str(findprompt["Prompt"]) + "{}".format(money))  # Send the user the amount of money lost
             await ctx.send("You now have $" + str(NewSearchofID["Balance"]))  # Send the user their new balance
         else:  # If the user is not caught
-            promptnum = random.randint(1, 1)  # Generate a random number for the prompt id
+            promptnum = random.randint(1, slutmax)  # Generate a random number for the prompt id
             findprompt = slutprompt.find_one({"_id": str(promptnum)})  # Find the prompt
             await ctx.send(str(findprompt["Prompt"]) + "{}".format(money))  # Send the prompt and the amount of money
             try:  # If the user has never had an entry in the database

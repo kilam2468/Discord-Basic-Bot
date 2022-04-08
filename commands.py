@@ -75,7 +75,7 @@ async def ping(ctx):
 @client.command()
 async def joined(ctx, member: discord.Member):
     """Says when a member joined."""
-    await ctx.send(f"{member.name} joined in {member.joined_at}")
+    await ctx.send(f"{member.name} joined on {member.joined_at}")
 
 
 @client.command(name='purge', help='purges chat', aliases=['Purge'])
