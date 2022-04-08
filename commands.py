@@ -3,9 +3,9 @@ import os
 from discord.ext import commands
 import config
 import logging
+
 intents = discord.Intents.all()
 intents.members = True
-
 
 client = commands.Bot(command_prefix='!', intents=intents)
 logging.basicConfig(level=logging.INFO)
@@ -18,6 +18,14 @@ async def on_ready():
     # print(client.user.id)
     print('Commands Online')
     print('------')
+
+
+@client.event
+async def on_member_join(self, member):
+    guild = member.guild
+    if guild.system_channel is not None:
+        to_send = f"Welcome {member.mention} to {guild.name}!"
+        await guild.system_channel.send(to_send)
 
 
 @client.command()
@@ -62,6 +70,12 @@ async def serverinfo(ctx):
 async def ping(ctx):
     await ctx.send(f'Pong! {round(client.latency * 1000)}ms')
     print("Ping Command Was Run")
+
+
+@client.command()
+async def joined(ctx, member: discord.Member):
+    """Says when a member joined."""
+    await ctx.send(f"{member.name} joined in {member.joined_at}")
 
 
 @client.command(name='purge', help='purges chat', aliases=['Purge'])

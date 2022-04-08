@@ -32,7 +32,10 @@ db = cluster["DiscordEconomy"]
 
 econposts = db.economy  # collection for Updating Economy Posts
 crimeprompt = db.crimeprompts  # collection for Crime Prompts#
+crimefail = db.crimefail  # collection for Crime Failures
 workprompt = db.workprompts  # collection for Work Prompts
+slutprompt = db.slutprompts  # collection for Slut Prompts
+slutfail = db.slutfail  # collection for Slut Failures
 
 
 @bot.event
@@ -42,6 +45,19 @@ async def on_ready():  # When the bot is ready will post these things
     # print(client.user.id)
     print('Economy Online')
     print('------')
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        seconds = round(error.retry_after) % (24 * 3600)
+        seconds %= 3600
+        minutes = seconds // 60
+        seconds %= 60
+        if minutes == 0:
+            await ctx.send(f'You are on cooldown for {seconds} seconds')
+        else:
+            await ctx.send(f'You are on cooldown for {minutes} minutes and {seconds} seconds')
 
 
 # nav = Navigation("◀️", "▶️", "❌")
@@ -60,6 +76,7 @@ class Economy(commands.Cog):
         brief="Work and Gain Money",
         help="Use this command to earn money legally",
     )
+    @commands.cooldown(1, 300, commands.BucketType.user)
     async def _work(self, ctx):
         money = random.randint(1, 10)  # Randomly generate an amount of money
         promptnum = random.randint(1, 2)  # Generate a random number for the prompt id
@@ -105,35 +122,112 @@ class Economy(commands.Cog):
         brief="Do Crime and Gain Money",
         help="Use this command to earn money illegally"
     )
+    @commands.cooldown(1, 120, commands.BucketType.user)
     async def _crime(self, ctx):
         money = random.randint(20, 50)  # Generate a random amount of money
-        promptnum = random.randint(1, 4)  # Generate a random number for the prompt id
-        findprompt = crimeprompt.find_one({"_id": str(promptnum)})  # Find the prompt
-        await ctx.send(str(findprompt["Prompt"]) + "{}".format(money))  # Send the prompt and the amount of money
-        try:  # If the user has never had an entry in the database
-            balance = {"_id": str(ctx.message.author.id),
-                       "Name": str(ctx.message.author.name),
-                       "Balance": int(money),
-                       "CreatedDate": datetime.datetime.utcnow(),
-                       "UpdatedDate": datetime.datetime.utcnow()}
-            econposts.insert_one(balance)
-            await ctx.send("You now have $" + str(balance["Balance"]))
-        except:  # If the user has an entry in the database
-            searchbyId = econposts.find_one({"_id": str(ctx.message.author.id)})
-            idBalance = searchbyId["Balance"]
-            filter = {"_id": str(ctx.message.author.id)}
-            newbalance = {"$set": {"Balance": idBalance + money}}
-            econposts.update_one(filter, newbalance)
-            econposts.update_one(filter, {"$set": {"UpdatedDate": datetime.datetime.utcnow()}})
-            NewSearchofID = econposts.find_one({"_id": str(ctx.message.author.id)})
-            await ctx.send("You now have $" + str(NewSearchofID["Balance"]))
+        chance = random.randint(1, 2)  # Determines if the user will be caught (success) or not (fail)
+        if chance == 1:  # If the user is caught
+            try:  # If the user has never had an entry in the database
+                balance = {"_id": str(ctx.message.author.id),
+                           "Name": str(ctx.message.author.name),
+                           "Balance": int(-money),
+                           "CreatedDate": datetime.datetime.utcnow(),
+                           "UpdatedDate": datetime.datetime.utcnow()}
+                econposts.insert_one(balance)
+                await ctx.send("Your Balance is now $" + str(balance["Balance"]))
+            except:  # If the user has an entry in the database
+                failnum = random.randint(1, 3)  # Generate a random number for the fail prompt id
+                findprompt = crimefail.find_one({"_id": str(failnum)})
+                searchbyId = econposts.find_one({"_id": str(ctx.message.author.id)})
+                idBalance = searchbyId["Balance"]
+                filter = {"_id": str(ctx.message.author.id)}
+                newbalance = {"$set": {"Balance": idBalance - money}}
+                econposts.update_one(filter, newbalance)
+                econposts.update_one(filter, {"$set": {"UpdatedDate": datetime.datetime.utcnow()}})
+                NewSearchofID = econposts.find_one({"_id": str(ctx.message.author.id)})
+            await ctx.send(str(findprompt["Prompt"]) + "{}".format(money))  # Send the user the amount of money lost
+            await ctx.send("You now have $" + str(NewSearchofID["Balance"]))  # Send the user their new balance
+        else:  # If the user is not caught
+            promptnum = random.randint(1, 4)  # Generate a random number for the prompt id
+            findprompt = crimeprompt.find_one({"_id": str(promptnum)})  # Find the prompt
+            await ctx.send(str(findprompt["Prompt"]) + "{}".format(money))  # Send the prompt and the amount of money
+            try:  # If the user has never had an entry in the database
+                balance = {"_id": str(ctx.message.author.id),
+                           "Name": str(ctx.message.author.name),
+                           "Balance": int(money),
+                           "CreatedDate": datetime.datetime.utcnow(),
+                           "UpdatedDate": datetime.datetime.utcnow()}
+                econposts.insert_one(balance)
+                await ctx.send("You now have $" + str(balance["Balance"]))
+            except:  # If the user has an entry in the database
+                searchbyId = econposts.find_one({"_id": str(ctx.message.author.id)})
+                idBalance = searchbyId["Balance"]
+                filter = {"_id": str(ctx.message.author.id)}
+                newbalance = {"$set": {"Balance": idBalance + money}}
+                econposts.update_one(filter, newbalance)
+                econposts.update_one(filter, {"$set": {"UpdatedDate": datetime.datetime.utcnow()}})
+                NewSearchofID = econposts.find_one({"_id": str(ctx.message.author.id)})
+                await ctx.send("You now have $" + str(NewSearchofID["Balance"]))
+
+    @commands.command(
+        name="slut",
+        aliases=["Slut"],
+        brief="Do a sexual act to Gain Money",
+        help="Use this command to earn money illegally and sexually"
+    )
+    @commands.cooldown(1, 120, commands.BucketType.user)
+    async def _slut(self, ctx):
+        money = random.randint(10, 40)  # Generate a random amount of money
+        chance = random.randint(1, 2)  # Determines if the user will be caught (success) or not (fail)
+        if chance == 1:  # If the user is caught
+            try:  # If the user has never had an entry in the database
+                balance = {"_id": str(ctx.message.author.id),
+                           "Name": str(ctx.message.author.name),
+                           "Balance": int(-money),
+                           "CreatedDate": datetime.datetime.utcnow(),
+                           "UpdatedDate": datetime.datetime.utcnow()}
+                econposts.insert_one(balance)
+                await ctx.send("Your Balance is now $" + str(balance["Balance"]))
+            except:  # If the user has an entry in the database
+                failnum = random.randint(1, 4)  # Generate a random number for the fail prompt id
+                findprompt = slutfail.find_one({"_id": str(failnum)})
+                searchbyId = econposts.find_one({"_id": str(ctx.message.author.id)})
+                idBalance = searchbyId["Balance"]
+                filter = {"_id": str(ctx.message.author.id)}
+                newbalance = {"$set": {"Balance": idBalance - money}}
+                econposts.update_one(filter, newbalance)
+                econposts.update_one(filter, {"$set": {"UpdatedDate": datetime.datetime.utcnow()}})
+                NewSearchofID = econposts.find_one({"_id": str(ctx.message.author.id)})
+            await ctx.send(str(findprompt["Prompt"]) + "{}".format(money))  # Send the user the amount of money lost
+            await ctx.send("You now have $" + str(NewSearchofID["Balance"]))  # Send the user their new balance
+        else:  # If the user is not caught
+            promptnum = random.randint(1, 1)  # Generate a random number for the prompt id
+            findprompt = slutprompt.find_one({"_id": str(promptnum)})  # Find the prompt
+            await ctx.send(str(findprompt["Prompt"]) + "{}".format(money))  # Send the prompt and the amount of money
+            try:  # If the user has never had an entry in the database
+                balance = {"_id": str(ctx.message.author.id),
+                           "Name": str(ctx.message.author.name),
+                           "Balance": int(money),
+                           "CreatedDate": datetime.datetime.utcnow(),
+                           "UpdatedDate": datetime.datetime.utcnow()}
+                econposts.insert_one(balance)
+                await ctx.send("You now have $" + str(balance["Balance"]))
+            except:  # If the user has an entry in the database
+                searchbyId = econposts.find_one({"_id": str(ctx.message.author.id)})
+                idBalance = searchbyId["Balance"]
+                filter = {"_id": str(ctx.message.author.id)}
+                newbalance = {"$set": {"Balance": idBalance + money}}
+                econposts.update_one(filter, newbalance)
+                econposts.update_one(filter, {"$set": {"UpdatedDate": datetime.datetime.utcnow()}})
+                NewSearchofID = econposts.find_one({"_id": str(ctx.message.author.id)})
+                await ctx.send("You now have $" + str(NewSearchofID["Balance"]))
 
 
-# @bot.slash_command(guild_ids=[917236140422070283], name="ping", description="Get bot ping")
-# async def ping(ctx):
-# await ctx.send(f'Pong! {round(bot.latency * 1000)}ms')
-# print("Ping Command Was Run")
+@bot.slash_command(guild_ids=[917236140422070283], name="ping", description="Get bot ping")
+async def ping(ctx):
+    await ctx.send(f'Pong! {round(bot.latency * 1000)}ms')
+    print("Ping Command Was Run")
 
 
-asyncio.run (bot.add_cog(Economy(bot)))
+bot.add_cog(Economy(bot))
 bot.run(config.token)

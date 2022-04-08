@@ -28,17 +28,24 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
 - :heavy_check_mark: Created !list Command for dnd characters
 - :heavy_check_mark: Created !delete command for dnd characters
 - :heavy_check_mark: Created Basic Web Dashboard
+- :heavy_check_mark: Finished Fortnite Stats Module
+  - found under !profile 
+- :heavy_check_mark: Finished Apex Legends Stats Module
+  - found under !profile 
+- :heavy_check_mark: Finished !slut Command
+  - added prompts in Database
+- :heavy_check_mark: Created Failure 50% rate for Crime and Slut commands
+- :heavy_check_mark: Created Buttons for Game Tracker
 
 ## [TODO]
 - Fix sync issues
 - Add more commands?
-- Create more Crime Prompts
-- Create Work Prompts
-- Create Slut Prompts
+- Create more Crime Prompts/Fails
+- Create More Work Prompts
+- Create More Slut Prompts/Fails
 - as user types in chat money will be added to their balance
 
 
-- Possibly make a DND Module?
 - Advanced Web Dashboard
   - something like https://github.com/DrCoderEthan/Flask-Discord-Bot-Dashboard
 

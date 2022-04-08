@@ -2,19 +2,23 @@ from time import sleep
 import re
 import discord
 import os
+
+from discord import reaction
 from discord.ext import commands
 import random
 
 from pymongo.errors import DuplicateKeyError
-
+import logging
 import config
 import asyncio
 import pymongo
 from pymongo import MongoClient
 import config
 import datetime
+
 intents = discord.Intents.all()
 intents.members = True
+logging.basicConfig(level=logging.INFO)
 
 client = commands.Bot(command_prefix='!', intents=intents)
 dice_list = ["D4", "D6", "D8", "D10", "D12", "D20", "D100"]
@@ -52,11 +56,11 @@ class Dnd(commands.Cog):
     @commands.command(name='create', help='Creates a new character')
     async def create(self, ctx, *, args):
         """Creates a new character"""
-        if args is None: # if no args are given
+        if args is None:  # if no args are given
             await ctx.send('Please enter a name for your character')
             await ctx.send('Example: !create character name')
-        else: # if args are given
-            if args.upper() == 'CHARACTER' or args.upper() == 'CHAR': # if args are character
+        else:  # if args are given
+            if args.upper() == 'CHARACTER' or args.upper() == 'CHAR':  # if args are character
                 await ctx.send('Please enter a name for your character')
                 await ctx.send('Example: !create character name')
                 sleep(1)
@@ -79,10 +83,13 @@ class Dnd(commands.Cog):
                 except:  # If the user has had an entry in the database
                     await ctx.send('You already have a character'
                                    '\nYou can only have 3 characters')
-                    numofChars = characters.count_documents({"_id": {"$regex": str(ctx.message.author.id)}}) # Counts the number of characters
+                    numofChars = characters.count_documents(
+                        {"_id": {"$regex": str(ctx.message.author.id)}})  # Counts the number of characters
                     print(numofChars)
                     await ctx.send('You currently have ' + str(numofChars) + ' characters')
-                    await ctx.send('Would you like this new character to be saved?')
+                    msg = await ctx.send('Would you like this new character to be saved?')
+                    await msg.add_reaction('✅')
+                    await msg.add_reaction('❌')
                     sleep(1)
                     create_another = await client.wait_for('message', timeout=60.0)
                     if create_another.content.upper() == 'YES':
@@ -96,25 +103,31 @@ class Dnd(commands.Cog):
                 await ctx.send('Please enter a class for your character')
 
     @commands.command(name='delete', help='Deletes a character')
-    async def delete(self, ctx, *, args): # Deletes a character
+    async def delete(self, ctx, *, args):  # Deletes a character
         """Deletes a character"""
         if args.upper() == 'CHARACTER' or args.upper() == 'CHAR':
-            await ctx.send('Please enter a name for your character')
-            await ctx.send('Example: !delete character name')
+            await ctx.send('Please enter the FULL NAME of the character you want deleted')
+            await ctx.send('Or type the number of the character you want deleted')
+            await ctx.send('Example: !delete character 2')
             sleep(1)
             character_name = await client.wait_for('message', timeout=60.0)
-            try:
-                characters.delete_one({"CharacterName": character_name.content.capitalize()})
-                await ctx.send('Character deleted')
-            except:
-                await ctx.send('Character not found')
-                await ctx.send("use !list to see all your characters")
+            if character_name.content == '1' or character_name.content == '2' or character_name.content == '3':
+                characters.delete_one({"CharacterNum": int(character_name.content)})
+                await ctx.send('Character has been deleted')
+            else:
+                try:
+                    characters.delete_one({"CharacterName": character_name.content.capitalize()})
+                    await ctx.send('Character deleted')
+                except:
+                    await ctx.send('Character not found')
+                    await ctx.send("use !list to see all your characters")
         else:
             await ctx.send('Please use !delete character')
 
     @commands.command(name='list', help='Lists all characters')
-    async def list(self, ctx): # Lists all characters
+    async def list(self, ctx):  # Lists all characters
         """Lists all characters"""
+        await ctx.send("Okay, let me look up your characters")
         numofChars = characters.count_documents({"_id": {"$regex": str(ctx.message.author.id)}})
         if numofChars == 0:
             await ctx.send('You have no characters')
@@ -128,7 +141,7 @@ class Dnd(commands.Cog):
                 await ctx.send("---------------------------------")
 
 
-async def another_char(ctx, args, character_name, character_class): # Creates another character 2nd or 3rd
+async def another_char(ctx, args, character_name, character_class):  # Creates another character 2nd or 3rd
     # create_another = await client.wait_for('message', timeout=60.0)
     if args.upper() == 'YES':
         numofChars = characters.count_documents({"_id": {"$regex": str(ctx.message.author.id)}})
@@ -172,6 +185,5 @@ async def update_character(ctx, character_name, character_class):
     characters.insert_one(characterload)
 
 
-
-client.add_cog(Dnd(client))
+asyncio.run(client.add_cog(Dnd(client)))
 client.run(config.token)
