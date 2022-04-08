@@ -36,7 +36,7 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
   - added prompts in Database
 - :heavy_check_mark: Created Failure 50% rate for Crime and Slut commands
 - :heavy_check_mark: Created Buttons for Game Tracker
-- :heavy_check_mark: On member join added
+- :heavy_check_mark: On member join added 
 
 ## [TODO]
 - Fix sync issues
