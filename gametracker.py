@@ -10,6 +10,7 @@ from discord.ui import Button, View
 import fortnite_api
 from fortnite_api import StatsImageType
 import shutil
+import time
 
 intents = discord.Intents.all()
 intents.members = True
@@ -35,6 +36,7 @@ async def profile(ctx):
     button2 = Button(label='Fortnite', style=discord.ButtonStyle.blurple, custom_id='Fortnite')
 
     async def button_callback(interaction):
+        time.sleep(1)
         await interaction.response.edit_message(content="You pressed: " + interaction.custom_id, view=None)
         pressed = interaction.custom_id
         if pressed == 'Apex':

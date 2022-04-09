@@ -8,6 +8,7 @@ import logging
 from discord import ClientException
 from discord.ext import commands
 from discord.ext.commands import bot, Bot
+
 intents = discord.Intents.all()
 intents.members = True
 
@@ -75,7 +76,7 @@ async def play(ctx, url: str):  # Plays a song
 
     try:
         connected = ctx.author.voice
-        await connected.channel.connect() # Connects to the voice channel
+        await connected.channel.connect()  # Connects to the voice channel
         print("Connected to \"" + connected.channel.name + "\""" voice channel")
     except discord.ClientException:
         pass
@@ -151,7 +152,7 @@ async def resume(ctx):  # Resumes the music
 async def stop(ctx):  # Stops the music and clears the queue
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     voice.stop()
-    clear(ctx)
+    await clear(ctx)
     ctx.send("Music Stopped and Queue Cleared")
 
 
@@ -171,7 +172,7 @@ async def clear(ctx):  # Clears the queue
 async def skip(ctx):  # Skips the current song
     voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
     print(playlist[0])
-    if voice.is_playing(): # Checks if there is a song playing
+    if voice.is_playing():  # Checks if there is a song playing
         voice.stop()
         await play_next(ctx, playlist[0])
     if not voice.is_playing():  # Checks if there is a song playing
@@ -181,14 +182,14 @@ async def skip(ctx):  # Skips the current song
         await play_next(ctx, playlist[0])
         # playlist.pop(0)
 
-    else:  #useless rn
+    else:  # useless rn
         await ctx.send("Currently no audio is playing.")
         await ctx.send("Attempting to skip song...")
         await ctx.invoke(play(ctx.get_command('play'), playlist[0]))
 
 
 @play.before_invoke
-async def ensure_voice(ctx): # Checks if the bot is connected to a voice channel
+async def ensure_voice(ctx):  # Checks if the bot is connected to a voice channel
     if ctx.voice_client is None:
         if ctx.author.voice:
             await ctx.author.voice.channel.connect()
@@ -199,8 +200,12 @@ async def ensure_voice(ctx): # Checks if the bot is connected to a voice channel
         ctx.voice_client.stop()
 
 
-@client.command()
-async def queue(ctx):   # Displays the queue
+@client.command(
+    name='queue',
+    description='Displays Queue.',
+    aliases=['q'],
+)
+async def queue(ctx):  # Displays the queue
     await ctx.send(playlist)
 
 
