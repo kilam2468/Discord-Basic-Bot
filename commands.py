@@ -11,7 +11,6 @@ client = commands.Bot(command_prefix='!', intents=intents)
 logging.basicConfig(level=logging.INFO)
 
 
-
 @client.event
 async def on_ready():
     print('Logged in as')
@@ -42,17 +41,19 @@ async def hello(ctx, *args):
 
 @client.command()
 async def server(ctx):
-    avatar =ctx.message.author.avatar
-    embed = discord.Embed(title = f"{ctx.guild.name} Info", description = "Information of this Server", color = discord.Colour.blue())
-    embed.add_field(name = '🆔Server ID', value = f"{ctx.guild.id}", inline = True)
-    embed.add_field(name = '📆Created On', value = ctx.guild.created_at.strftime("%b %d %Y"), inline = True)
-    embed.add_field(name = '👑Owner', value = f"{ctx.guild.owner}", inline = True)
-    embed.add_field(name = '👥Members', value = f'{ctx.guild.member_count} Members', inline = True)
-    embed.add_field(name = '💬Channels', value = f'{len(ctx.guild.text_channels)} Text | {len(ctx.guild.voice_channels)} Voice', inline = True)
-    embed.add_field(name = '🌎Region', value = f'{ctx.guild.region}', inline = True)
-    embed.set_thumbnail(url = ctx.guild.icon)
-    embed.set_footer(text = "⭐ • Duo")
-    embed.set_author(name = f'{ctx.author.name}', icon_url=avatar)
+    avatar = ctx.message.author.avatar
+    embed = discord.Embed(title=f"{ctx.guild.name} Info", description="Information of this Server",
+                          color=discord.Colour.blue())
+    embed.add_field(name='🆔Server ID', value=f"{ctx.guild.id}", inline=True)
+    embed.add_field(name='📆Created On', value=ctx.guild.created_at.strftime("%b %d %Y"), inline=True)
+    embed.add_field(name='👑Owner', value=f"{ctx.guild.owner}", inline=True)
+    embed.add_field(name='👥Members', value=f'{ctx.guild.member_count} Members', inline=True)
+    embed.add_field(name='💬Channels',
+                    value=f'{len(ctx.guild.text_channels)} Text | {len(ctx.guild.voice_channels)} Voice', inline=True)
+    embed.add_field(name='🌎Region', value=f'{ctx.guild.region}', inline=True)
+    embed.set_thumbnail(url=ctx.guild.icon)
+    embed.set_footer(text="⭐ • Duo")
+    embed.set_author(name=f'{ctx.author.name}', icon_url=avatar)
     await ctx.send(embed=embed)
     print("server Command Was Run")
 
