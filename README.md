@@ -46,7 +46,7 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
 - Create More Slut Prompts/Fails
 - as user types in chat money will be added to their balance
 - Change DND Module Questions to Buttons
-
+- Add Gamble command
 - Advanced Web Dashboard
   - something like https://github.com/DrCoderEthan/Flask-Discord-Bot-Dashboard
 
