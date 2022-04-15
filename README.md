@@ -36,7 +36,9 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
   - added prompts in Database
 - :heavy_check_mark: Created Failure 50% rate for Crime and Slut commands
 - :heavy_check_mark: Created Buttons for Game Tracker
-- :heavy_check_mark: On member join added 
+- :heavy_check_mark: On member join added
+- :heavy_check_mark: Add Gamble command (Econonmy)
+- :heavy_check_mark: Add Rob Command (Economy)
 
 ## [TODO]
 - Fix sync issues
@@ -46,8 +48,7 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
 - Create More Slut Prompts/Fails
 - as user types in chat money will be added to their balance
 - Change DND Module Questions to Buttons
-- Add Gamble command (Econonmy)
-- Add Rob Command (Economy)
+- Add @ arg for balance
 - Advanced Web Dashboard
   - something like https://github.com/DrCoderEthan/Flask-Discord-Bot-Dashboard
 
