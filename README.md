@@ -51,4 +51,5 @@ Live Creation Streamed @: [twitch.tv/kilam2468](https://twitch.tv/kilam2468)
 - Add @ arg for balance
 - Advanced Web Dashboard
   - something like https://github.com/DrCoderEthan/Flask-Discord-Bot-Dashboard
+- Look into running bot in AWS Lambda
 
